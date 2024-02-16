@@ -21,28 +21,29 @@ function Word(idNumber, letter, hint, definition, word, correct) {
 }
 
 function showDefinition(pos) {
-	$("#js--hint").html(words[pos].hint);
-	$("#js--definition").html(words[pos].definition);
+    document.getElementById("js--hint").innerHTML = words[pos].hint;
+    document.getElementById("js--definition").innerHTML = words[pos].definition;
 }
 
 let correctWords = 0;
 
-function checkAnswer(pos) {	
-	const userAnswer = $("#js--user-answer").val();
-	
-	const arrayPalabras = words[pos].word;
-	if (arrayPalabras.includes(userAnswer.toLowerCase())) {
-		words[pos].correct = true;
-		$(".circle .item").eq(words[pos].idNumber).addClass("item--success");
-		correctWords++;
-		$("#js--score").html(correctWords);
-	} else {
-		words[pos].correct = false;
-		$(".circle .item").eq(words[pos].idNumber).addClass("item--failure");
-	}
+function checkAnswer(pos) {
+    const userAnswer = document.getElementById("js--user-answer").value;
 
-	return count++;
+    const arrayPalabras = words[pos].word;
+    if (arrayPalabras.includes(userAnswer.toLowerCase())) {
+        words[pos].correct = true;
+        document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--success");
+        correctWords++;
+        document.getElementById("js--score").innerHTML = correctWords;
+    } else {
+        words[pos].correct = false;
+        document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--failure");
+    }
+
+    return count++;
 }
+
 
 function pasapalabra(pos) {
 	const w = words.splice(pos, 1)[0];
@@ -50,12 +51,12 @@ function pasapalabra(pos) {
 }
 
 function continuePlaying() {
-	if (count != 25) {
-		$("#js--user-answer").val("");
-		showDefinition(count);
-	} else {
-		endGame();
-	}
+    if (count !== 25) {
+        document.getElementById("js--user-answer").value = "";
+        showDefinition(count);
+    } else {
+        endGame();
+    }
 }
 
 let seconds;
@@ -101,56 +102,57 @@ function showUserScore() {
 	return "Has conseguido un total de " + counter + " acierto" + (counter == 1 ? '' : 's') + '.';
 }
 
-
 // Main Program
 // ----------------------------------------------------------------------------- */
 
 // New game
 let count = 0; // Counter for answered words
-$("#js--new-game").click(function() {
-	$("#js--ng-controls").addClass("hidden");
-	$("#js--question-controls").removeClass("hidden");
-	$("#js--close").removeClass("hidden");
-	showDefinition(count);
-	countdown();
+
+document.getElementById("js--new-game").addEventListener("click", function() {
+    document.getElementById("js--ng-controls").classList.add("hidden");
+    document.getElementById("js--question-controls").classList.remove("hidden");
+    document.getElementById("js--close").classList.remove("hidden");
+    showDefinition(count);
+    countdown();
 });
+
 
 // Send the answer
-$("#js--send").click(function() {
+document.getElementById("js--send").addEventListener("click", function() {
 	checkAnswer(count);
 	continuePlaying();
-});
+});  
 
 // Key bindings for send the answer
-$("#js--question-controls").keypress(function(event) {
-	let keycode = (event.keyCode ? event.keyCode : event.which);
-	if (keycode == "13") {
-		checkAnswer(count);
-		continuePlaying();
-	}
+document.getElementById("js--question-controls").addEventListener("keypress", function(event) {
+    let key = event.key;
+    if (key === "Enter") {
+        checkAnswer(count);
+        continuePlaying();
+    }
 });
 
 // Skip the word
-$("#js--pasapalabra").click(function() {
-	pasapalabra(count);
-	continuePlaying();
+document.getElementById("js--pasapalabra").addEventListener("click", function() {
+    pasapalabra(count);
+    continuePlaying();
 });
 
 // Key bindings for skip the word
-$("#js--question-controls").keypress(function(event) {
-	let keycode = (event.keyCode ? event.keyCode : event.which);
-	if (keycode == "32") {
-		pasapalabra(count);
-		continuePlaying();
-	}
+document.getElementById("js--question-controls").addEventListener("keydown", function(event) {
+    let key = event.key;
+    if (key === " ") {
+        pasapalabra(count);
+        continuePlaying();
+    }
 });
 
 // Play again
-$("#js--pa").click(function() {
-	location.reload()
+document.getElementById("js--pa").addEventListener("click", function() {
+    location.reload();
 });
 
 // End the game
-$("#js--close").click(function() {
-	endGame();
+document.getElementById("js--close").addEventListener("click", function() {
+    endGame();
 });
