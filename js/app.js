@@ -44,7 +44,6 @@ function checkAnswer(pos) {
     return count++;
 }
 
-
 function pasapalabra(pos) {
 	const w = words.splice(pos, 1)[0];
 	words.push(w);
@@ -115,7 +114,6 @@ document.getElementById("js--new-game").addEventListener("click", function() {
     showDefinition(count);
     countdown();
 });
-
 
 // Send the answer
 document.getElementById("js--send").addEventListener("click", function() {
