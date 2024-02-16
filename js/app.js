@@ -11,7 +11,6 @@ for(const { questionId, letter, introduction, description, solutions } of data.p
 
 // Functions
 // -----------------------------------------------------------------------------
-
 function Word(idNumber, letter, hint, definition, word, correct) {
 	this.idNumber = idNumber;
 	this.letter = letter;
@@ -26,7 +25,7 @@ function showDefinition(pos) {
 	$("#js--definition").html(words[pos].definition);
 }
 
-let remainingWords = 0;
+let correctWords = 0;
 
 function checkAnswer(pos) {	
 	const userAnswer = $("#js--user-answer").val();
@@ -35,8 +34,8 @@ function checkAnswer(pos) {
 	if (arrayPalabras.includes(userAnswer.toLowerCase())) {
 		words[pos].correct = true;
 		$(".circle .item").eq(words[pos].idNumber).addClass("item--success");
-		remainingWords++;
-		$("#js--score").html(remainingWords);
+		correctWords++;
+		$("#js--score").html(correctWords);
 	} else {
 		words[pos].correct = false;
 		$(".circle .item").eq(words[pos].idNumber).addClass("item--failure");
