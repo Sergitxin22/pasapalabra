@@ -210,6 +210,7 @@ document.getElementById("js--close").addEventListener("click", function() {
 
 function loadJsonFile(startGame = false) {
     const fileInput = document.getElementById('jsonFileInput');
+    const JsonInput = document.getElementById('textoJSON');
     
     if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
@@ -218,6 +219,7 @@ function loadJsonFile(startGame = false) {
 
         reader.onload = function(e) {
             const content = e.target.result;
+            JsonInput.innerText = file.name;
 
             try {
                 const jsonData = JSON.parse(content);
