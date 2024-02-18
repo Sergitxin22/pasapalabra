@@ -20,6 +20,18 @@ function Word(idNumber, letter, hint, definition, word, correct) {
 	this.correct = null;
 }
 
+function createCircle() {
+    const circle = document.getElementById("circle");
+
+    words.forEach(({ letter }) => {
+        const li = document.createElement("li");
+        li.className = "item";
+        li.textContent = letter;
+
+        circle.appendChild(li);
+    });
+}
+
 function showDefinition(pos) {
     document.getElementById("js--hint").innerHTML = words[pos].hint;
     document.getElementById("js--definition").innerHTML = words[pos].definition;
@@ -31,7 +43,8 @@ function checkAnswer(pos) {
     const userAnswer = document.getElementById("js--user-answer").value;
 
     const arrayPalabras = words[pos].word;
-    if (arrayPalabras.includes(userAnswer.toLowerCase())) {
+    
+    if (arrayPalabras.includes(userAnswer.trim().toLowerCase())) {
         words[pos].correct = true;
         document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--success");
         correctWords++;
@@ -106,6 +119,9 @@ function showUserScore() {
 
 // New game
 let count = 0; // Counter for answered words
+
+// Create circle from preguntas.json
+createCircle();
 
 document.getElementById("js--new-game").addEventListener("click", function() {
     document.getElementById("js--ng-controls").classList.add("hidden");
