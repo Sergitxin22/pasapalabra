@@ -2,11 +2,38 @@ import data from './data/preguntas.json' assert { type: 'json' };
 
 // Variables
 // -----------------------------------------------------------------------------
+
 let words = []
 
-for(const { questionId, letter, introduction, description, solutions } of data.preguntas) {
-	let palabra = new Word(questionId, letter, introduction, description, solutions)
-	words.push(palabra)
+function defaultWords() {
+    loadWords(data);
+    createCircle();
+}
+
+function createWords(loadedJson = null, startGame) {
+    removeCircle();
+    words = [];
+    loadWords(loadedJson || data);
+    createCircle();
+
+    if (startGame) {
+        showControls();
+    }
+}
+
+function loadWords(jsonData) {
+    for (const { questionId, letter, introduction, description, solutions } of jsonData.preguntas) {
+        let palabra = new Word(questionId, letter, introduction, description, solutions);
+        words.push(palabra);
+    }
+}
+
+function showControls() {
+    document.getElementById("js--ng-controls").classList.add("hidden");
+    document.getElementById("js--question-controls").classList.remove("hidden");
+    document.getElementById("js--close").classList.remove("hidden");
+    showDefinition(count);
+    countdown();
 }
 
 // Functions
@@ -30,6 +57,15 @@ function createCircle() {
 
         circle.appendChild(li);
     });
+}
+
+function removeCircle() {
+    const circle = document.getElementById("circle");
+
+    // Remove all childs form "circle" element
+    while (circle.firstChild) {
+        circle.removeChild(circle.firstChild);
+    }
 }
 
 function showDefinition(pos) {
@@ -120,15 +156,16 @@ function showUserScore() {
 // New game
 let count = 0; // Counter for answered words
 
-// Create circle from preguntas.json
-createCircle();
+defaultWords();
 
+// Prerender game
+document.getElementById("jsonFileInput").addEventListener("change", function() {
+    loadJsonFile();
+});
+
+// Prepare game
 document.getElementById("js--new-game").addEventListener("click", function() {
-    document.getElementById("js--ng-controls").classList.add("hidden");
-    document.getElementById("js--question-controls").classList.remove("hidden");
-    document.getElementById("js--close").classList.remove("hidden");
-    showDefinition(count);
-    countdown();
+    loadJsonFile(true);
 });
 
 // Send the answer
@@ -170,3 +207,30 @@ document.getElementById("js--pa").addEventListener("click", function() {
 document.getElementById("js--close").addEventListener("click", function() {
     endGame();
 });
+
+function loadJsonFile(startGame = false) {
+    const fileInput = document.getElementById('jsonFileInput');
+    
+    if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const content = e.target.result;
+
+            try {
+                const jsonData = JSON.parse(content);
+                createWords(jsonData, startGame);
+            } catch (error) {
+                console.error('Error al analizar el archivo JSON:', error);
+            }
+        };
+
+        reader.readAsText(file);
+    } else {
+        // If no file was selected, use the JSON you already had by default
+        createWords(null, startGame);
+        console.warn('Se está utilizando los datos por defecto, ya que no se ha seleccionado un archivo JSON.');
+    }
+}
