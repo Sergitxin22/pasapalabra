@@ -5,6 +5,10 @@ import data from './data/preguntas.json' assert { type: 'json' };
 
 let words = []
 
+function $(elementId) {
+    return document.getElementById(elementId);
+}
+
 function defaultWords() {
     loadWords(data);
     createCircle();
@@ -29,9 +33,9 @@ function loadWords(jsonData) {
 }
 
 function showControls() {
-    document.getElementById("js--ng-controls").classList.add("hidden");
-    document.getElementById("js--question-controls").classList.remove("hidden");
-    document.getElementById("js--close").classList.remove("hidden");
+    $("js--ng-controls").classList.add("hidden");
+    $("js--question-controls").classList.remove("hidden");
+    $("js--close").classList.remove("hidden");
     showDefinition(count);
     countdown();
 }
@@ -48,7 +52,7 @@ function Word(idNumber, letter, hint, definition, word, correct) {
 }
 
 function createCircle() {
-    const circle = document.getElementById("circle");
+    const circle = $("circle");
 
     words.forEach(({ letter }) => {
         const li = document.createElement("li");
@@ -60,7 +64,7 @@ function createCircle() {
 }
 
 function removeCircle() {
-    const circle = document.getElementById("circle");
+    const circle = $("circle");
 
     // Remove all childs form "circle" element
     while (circle.firstChild) {
@@ -69,14 +73,14 @@ function removeCircle() {
 }
 
 function showDefinition(pos) {
-    document.getElementById("js--hint").innerHTML = words[pos].hint;
-    document.getElementById("js--definition").innerHTML = words[pos].definition;
+    $("js--hint").innerHTML = words[pos].hint;
+    $("js--definition").innerHTML = words[pos].definition;
 }
 
 let correctWords = 0;
 
 function checkAnswer(pos) {
-    const userAnswer = document.getElementById("js--user-answer").value;
+    const userAnswer = $("js--user-answer").value;
 
     const arrayPalabras = words[pos].word;
     
@@ -84,7 +88,7 @@ function checkAnswer(pos) {
         words[pos].correct = true;
         document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--success");
         correctWords++;
-        document.getElementById("js--score").innerHTML = correctWords;
+        $("js--score").innerHTML = correctWords;
     } else {
         words[pos].correct = false;
         document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--failure");
@@ -100,7 +104,7 @@ function pasapalabra(pos) {
 
 function continuePlaying() {
     if (count !== 25) {
-        document.getElementById("js--user-answer").value = "";
+        $("js--user-answer").value = "";
         showDefinition(count);
     } else {
         endGame();
@@ -112,18 +116,18 @@ let temp;
 let timeoutMyOswego;
 
 function countdown() {
-    seconds = document.getElementById('js--timer').innerHTML;
+    seconds = $('js--timer').innerHTML;
     seconds = parseInt(seconds, 10);
     
     if (seconds == 1) {
-        temp = document.getElementById('js--timer');
+        temp = $('js--timer');
         temp.innerHTML = 0;
         endGame();
         return;
     }
     
     seconds--;
-    temp = document.getElementById('js--timer');
+    temp = $('js--timer');
     temp.innerHTML = seconds;
 
     timeoutMyOswego = setTimeout(countdown, 1000);
@@ -132,11 +136,11 @@ function countdown() {
 function endGame() {
 	clearTimeout(timeoutMyOswego); // Detiene el temporizador
 
-	document.getElementById('js--question-controls').classList.add('hidden');
-	document.getElementById('js--pa-controls').classList.remove('hidden');
-	document.getElementById('js--end-title').innerHTML = 'Fin de partida!';
-	document.getElementById('js--end-subtitle').innerHTML = showUserScore();
-	document.getElementById('js--close').classList.add('hidden');
+	$('js--question-controls').classList.add('hidden');
+	$('js--pa-controls').classList.remove('hidden');
+	$('js--end-title').innerHTML = 'Fin de partida!';
+	$('js--end-subtitle').innerHTML = showUserScore();
+	$('js--close').classList.add('hidden');
 }
 
 function showUserScore() {
@@ -159,23 +163,23 @@ let count = 0; // Counter for answered words
 defaultWords();
 
 // Prerender game
-document.getElementById("jsonFileInput").addEventListener("change", function() {
+$("jsonFileInput").addEventListener("change", function() {
     loadJsonFile();
 });
 
 // Prepare game
-document.getElementById("js--new-game").addEventListener("click", function() {
+$("js--new-game").addEventListener("click", function() {
     loadJsonFile(true);
 });
 
 // Send the answer
-document.getElementById("js--send").addEventListener("click", function() {
+$("js--send").addEventListener("click", function() {
 	checkAnswer(count);
 	continuePlaying();
 });  
 
 // Key bindings for send the answer
-document.getElementById("js--question-controls").addEventListener("keypress", function(event) {
+$("js--question-controls").addEventListener("keypress", function(event) {
     let key = event.key;
     if (key === "Enter") {
         checkAnswer(count);
@@ -184,13 +188,13 @@ document.getElementById("js--question-controls").addEventListener("keypress", fu
 });
 
 // Skip the word
-document.getElementById("js--pasapalabra").addEventListener("click", function() {
+$("js--pasapalabra").addEventListener("click", function() {
     pasapalabra(count);
     continuePlaying();
 });
 
 // Key bindings for skip the word
-document.getElementById("js--question-controls").addEventListener("keydown", function(event) {
+$("js--question-controls").addEventListener("keydown", function(event) {
     let key = event.key;
     if (key === " ") {
         pasapalabra(count);
@@ -199,18 +203,18 @@ document.getElementById("js--question-controls").addEventListener("keydown", fun
 });
 
 // Play again
-document.getElementById("js--pa").addEventListener("click", function() {
+$("js--pa").addEventListener("click", function() {
     location.reload();
 });
 
 // End the game
-document.getElementById("js--close").addEventListener("click", function() {
+$("js--close").addEventListener("click", function() {
     endGame();
 });
 
 function loadJsonFile(startGame = false) {
-    const fileInput = document.getElementById('jsonFileInput');
-    const JsonInput = document.getElementById('textoJSON');
+    const fileInput = $('jsonFileInput');
+    const JsonInput = $('textoJSON');
     
     if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
