@@ -4,6 +4,7 @@ import data from './data/preguntas.json' assert { type: 'json' };
 // -----------------------------------------------------------------------------
 
 let words = []
+var players = []
 
 function $(elementId) {
     return document.getElementById(elementId);
@@ -50,6 +51,20 @@ function Word(idNumber, letter, hint, definition, word, correct) {
 	this.word = word;
 	this.correct = null;
 }
+
+function chooseGroupsToPlay() {
+    for (let index = 0; index < 2; index++) {
+        let numPlayer = Math.floor(Math.random()*7 + 1);
+        while (players.includes(numPlayer)) {
+            numPlayer = Math.floor(Math.random()*7 + 1);
+        }
+
+        players.push(numPlayer);        
+    }
+    console.log("jugadores aleatorios: " + players);
+}
+
+window.players = players;
 
 function createCircle() {
     const circle = $("circle");
@@ -111,6 +126,26 @@ function continuePlaying() {
     }
 }
 
+function showPlayers() {
+    const jugadores = $("jugadores");
+    const h4 = document.createElement("h4");
+
+    h4.textContent = "Grupo " + players[0] + " VS Grupo " + players[1];
+
+    h4.style = "margin-bottom: 0px"
+
+    jugadores.appendChild(h4);
+
+    // players.forEach((number) => {
+    //     console.log(number)
+        
+        
+    //     p.textContent = "Grupo " + number;
+
+    //     jugadores.appendChild(p);
+    // });
+}
+
 let seconds;
 let temp;
 let timeoutMyOswego;
@@ -161,6 +196,7 @@ function showUserScore() {
 let count = 0; // Counter for answered words
 
 defaultWords();
+chooseGroupsToPlay()
 
 // Prerender game
 $("jsonFileInput").addEventListener("change", function() {
@@ -217,6 +253,10 @@ function loadJsonFile(startGame = false) {
     const JsonInput = $('textoJSON');
     
     if (fileInput.files.length > 0) {
+        players = window.players
+        showPlayers()
+        console.log("jugadores que van a jugar: " + players);
+        
         const file = fileInput.files[0];
 
         const reader = new FileReader();
@@ -240,3 +280,4 @@ function loadJsonFile(startGame = false) {
         console.warn('Se está utilizando los datos por defecto, ya que no se ha seleccionado un archivo JSON.');
     }
 }
+
