@@ -5,6 +5,12 @@ import data from './data/preguntas.json' assert { type: 'json' };
 
 let words = []
 var players = []
+let turno = 0
+
+// Modificacion
+let jugador1 = 0
+let jugador2 = 0
+let fallosPreguntaActual = 0
 
 function $(elementId) {
     return document.getElementById(elementId);
@@ -61,7 +67,7 @@ function chooseGroupsToPlay() {
 
         players.push(numPlayer);        
     }
-    console.log("jugadores aleatorios: " + players);
+    // console.log("jugadores aleatorios: " + players);
 }
 
 window.players = players;
@@ -95,21 +101,50 @@ function showDefinition(pos) {
 let correctWords = 0;
 
 function checkAnswer(pos) {
+    // showCurrentPlayer()
     const userAnswer = $("js--user-answer").value;
 
     const arrayPalabras = words[pos].word;
+    // console.log(turno);
     
     if (arrayPalabras.includes(userAnswer.trim().toLowerCase())) {
         words[pos].correct = true;
+        if (fallosPreguntaActual < 1) {
+            document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.remove("item--gray");
+        }
+        if (fallosPreguntaActual === 1) {
+            document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--orange");
+        }
+
         document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--success");
         correctWords++;
+        fallosPreguntaActual = 0 // Cambio
         $("js--score").innerHTML = correctWords;
+
+        addPointCurrentPlayer()
+        return count++; // Cambio
     } else {
-        words[pos].correct = false;
-        document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--failure");
+        // words[pos].correct = false;
+        // document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--failure");
+
+        // Cambio
+        changeTurn()
+        fallosPreguntaActual += 1
+        // showCurrentPlayer()
+        // console.log(turno);
+
+        document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--gray");
+        if (fallosPreguntaActual === 2) {
+            words[pos].correct = false;
+            document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.remove("item--gray");
+            document.querySelectorAll(".circle .item")[words[pos].idNumber].classList.add("item--failure");
+            fallosPreguntaActual = 0
+            return count++;
+        }
+        
     }
 
-    return count++;
+    // return count++; Cambio
 }
 
 function pasapalabra(pos) {
@@ -124,6 +159,25 @@ function continuePlaying() {
     } else {
         endGame();
     }
+}
+
+function showCurrentPlayer() {
+    const turnoDe = $("turnoDe");
+
+    turnoDe.textContent = "Turno del Grupo " + players[turno];
+
+    turnoDe.style = "color: white; text-decoration: underline;"
+
+    // jugadores.appendChild(h4);
+}
+
+function addPointCurrentPlayer() {
+    if (turno === 0) {
+        jugador1 += 1
+        
+    } else if (turno === 1) {
+        jugador2 += 1
+    } 
 }
 
 function showPlayers() {
@@ -144,6 +198,10 @@ function showPlayers() {
 
     //     jugadores.appendChild(p);
     // });
+}
+
+function changeTurn() {
+    turno = turno === 0 ? 1 : 0
 }
 
 let seconds;
@@ -173,21 +231,36 @@ function endGame() {
 
 	$('js--question-controls').classList.add('hidden');
 	$('js--pa-controls').classList.remove('hidden');
-	$('js--end-title').innerHTML = 'Fin de partida!';
-	$('js--end-subtitle').innerHTML = showUserScore();
+	// $('js--end-title').innerHTML = 'Fin de partida!';
+	$('js--end-title').innerHTML = 'Ha ganado el Grupo ' + players[turno];
+	// $('js--end-subtitle').innerHTML = showUserScore();
+	$('js--end-subtitle-1').innerHTML = showUserScore(0);
+    $('js--end-subtitle-1').style = "margin-top: 40px; margin-bottom: 0px"
+	$('js--end-subtitle-2').innerHTML = showUserScore(1);
 	$('js--close').classList.add('hidden');
 }
 
-function showUserScore() {
+function showUserScore(playerId) {
 	let counter = 0;
-	for (let i = 0; i < words.length; i++) {
-		if (words[i].correct == true) {
-			counter++;
-		}
-	}
+	if (playerId === 0) {
+        counter = jugador1
+    } else if (playerId === 1) {
+        counter = jugador2
+    }
 
-	return "Has conseguido un total de " + counter + " acierto" + (counter == 1 ? '' : 's') + '.';
+	return "El Grupo " + players[playerId] + " Ha conseguido un total de " + counter + " acierto" + (counter == 1 ? '' : 's') + '.';
 }
+
+// function showUserScore() {
+// 	let counter = 0;
+// 	for (let i = 0; i < words.length; i++) {
+// 		if (words[i].correct == true) {
+// 			counter++;
+// 		}
+// 	}
+
+// 	return "Has conseguido un total de " + counter + " acierto" + (counter == 1 ? '' : 's') + '.';
+// }
 
 // Main Program
 // ----------------------------------------------------------------------------- */
@@ -197,7 +270,7 @@ let count = 0; // Counter for answered words
 
 defaultWords();
 chooseGroupsToPlay()
-
+showCurrentPlayer()
 // Prerender game
 $("jsonFileInput").addEventListener("change", function() {
     loadJsonFile();
@@ -211,6 +284,7 @@ $("js--new-game").addEventListener("click", function() {
 // Send the answer
 $("js--send").addEventListener("click", function() {
 	checkAnswer(count);
+    showCurrentPlayer()
 	continuePlaying();
 });  
 
@@ -219,6 +293,7 @@ $("js--question-controls").addEventListener("keypress", function(event) {
     let key = event.key;
     if (key === "Enter") {
         checkAnswer(count);
+        showCurrentPlayer()
         continuePlaying();
     }
 });
@@ -255,6 +330,7 @@ function loadJsonFile(startGame = false) {
     if (fileInput.files.length > 0) {
         players = window.players
         showPlayers()
+        
         console.log("jugadores que van a jugar: " + players);
         
         const file = fileInput.files[0];

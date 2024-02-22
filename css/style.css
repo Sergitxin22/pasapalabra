@@ -587,6 +587,10 @@ body {
       background-image: radial-gradient(circle, #9ee379, #4caf50); }
     .circle .item--failure {
       background-image: radial-gradient(circle, #b9121b, #8e001c); }
+    .circle .item--gray {
+      background-image: radial-gradient(circle, #dcdcdc, #808080); }
+    .circle .item--orange {
+      background-image: radial-gradient(circle, #ffcc80, #ff9900); }
 
 .scoreboard {
   margin: 0 0 1em 2em;
