@@ -4,7 +4,7 @@ import data from './data/preguntas.json' assert { type: 'json' };
 // -----------------------------------------------------------------------------
 
 let words = []
-var players = []
+var players = [6,1]
 let turno = 0
 
 // Modificacion
@@ -58,17 +58,17 @@ function Word(idNumber, letter, hint, definition, word, correct) {
 	this.correct = null;
 }
 
-function chooseGroupsToPlay() {
-    for (let index = 0; index < 2; index++) {
-        let numPlayer = Math.floor(Math.random()*7 + 1);
-        while (players.includes(numPlayer)) {
-            numPlayer = Math.floor(Math.random()*7 + 1);
-        }
+// function chooseGroupsToPlay() {
+//     for (let index = 0; index < 2; index++) {
+//         let numPlayer = Math.floor(Math.random()*7 + 1);
+//         while (players.includes(numPlayer)) {
+//             numPlayer = Math.floor(Math.random()*7 + 1);
+//         }
 
-        players.push(numPlayer);        
-    }
-    // console.log("jugadores aleatorios: " + players);
-}
+//         players.push(numPlayer);        
+//     }
+//     // console.log("jugadores aleatorios: " + players);
+// }
 
 window.players = players;
 
@@ -269,7 +269,7 @@ function showUserScore(playerId) {
 let count = 0; // Counter for answered words
 
 defaultWords();
-chooseGroupsToPlay()
+// chooseGroupsToPlay()
 showCurrentPlayer()
 // Prerender game
 $("jsonFileInput").addEventListener("change", function() {
