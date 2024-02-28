@@ -3,6 +3,7 @@ import data from './data/preguntas.json' assert { type: 'json' };
 // Variables
 // -----------------------------------------------------------------------------
 
+var numPlayers = 9 
 let words = []
 var players = []
 let turno = 0
@@ -60,9 +61,9 @@ function Word(idNumber, letter, hint, definition, word, correct) {
 
 function chooseGroupsToPlay() {
     for (let index = 0; index < 2; index++) {
-        let numPlayer = Math.floor(Math.random()*7 + 1);
+        let numPlayer = Math.floor(Math.random()*numPlayers + 1);
         while (players.includes(numPlayer)) {
-            numPlayer = Math.floor(Math.random()*7 + 1);
+            numPlayer = Math.floor(Math.random()*numPlayers + 1);
         }
 
         players.push(numPlayer);        
